@@ -6,5 +6,5 @@
     { "url": "heroku/php" },
     { "url": "heroku/nodejs" }
   ],
-  "repository": "https://github.com/eaststrong/esk-jetstream"
+  "repository": "https://github.com/eaststrong/esk-livewire"
 }
