@@ -1,0 +1,23 @@
+{
+  "devDependencies": {
+    "@tailwindcss/forms": "latest",
+    "@tailwindcss/typography": "latest",
+    "alpinejs": "latest",
+    "axios": "latest",
+    "laravel-mix": "latest",
+    "lodash": "latest",
+    "postcss": "latest",
+    "postcss-import": "latest",
+    "tailwindcss": "latest"
+  },
+  "private": true,
+  "scripts": {
+    "build": "yarn run production",
+    "dev": "yarn run development",
+    "development": "mix",
+    "hot": "mix watch --hot",
+    "production": "mix --production",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000"
+  }
+}

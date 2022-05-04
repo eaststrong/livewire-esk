@@ -1,0 +1,10 @@
+{
+  "addons": [
+    { "plan": "heroku-postgresql" }
+  ],
+  "buildpacks": [
+    { "url": "heroku/php" },
+    { "url": "heroku/nodejs" }
+  ],
+  "repository": "https://github.com/eaststrong/esk-jetstream"
+}
