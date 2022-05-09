@@ -6,3 +6,11 @@
 
 ## Deploy
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+php artisan key:generate --show
+
+
+->
+
+
+APP_KEY
