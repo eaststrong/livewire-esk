@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('APP_ENV', 'production') === 'production' ? 'errorlog' : env('LOG_CHANNEL', 'stack'),
+    'default' => empty(env('DATABASE_URL')) ? env('LOG_CHANNEL', 'stack') : env('LOG_CHANNEL', 'errorlog'),
 
     /*
     |--------------------------------------------------------------------------

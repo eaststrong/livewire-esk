@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => empty(env('DATABASE_URL')) ? env('APP_ENV', 'local') : env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => empty(env('DATABASE_URL')) ? true : (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
