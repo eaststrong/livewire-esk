@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'esk-livewire'),
+    'name' => env('APP_NAME', 'livewire-esk'),
 
     /*
     |--------------------------------------------------------------------------
