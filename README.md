@@ -4,6 +4,39 @@
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
 </p>
 
+
+composer install
+
+
+composer update
+
+
+copy .env.example .env
+
+
+php artisan key:generate
+
+
+php artisan migrate
+
+
+php artisan db:seed
+
+
+yarn install --ignore-optional
+
+
+yarn upgrade --ignore-optional
+
+
+yarn run dev
+
+
+php artisan serve
+
+
+http://localhost:8000
+
 ## Deploy
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
