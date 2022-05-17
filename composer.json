@@ -7,9 +7,7 @@
     }
   },
   "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
-    }
+    "psr-4": {"Tests\\": "tests/"}
   },
   "config": {
     "optimize-autoloader": true,
@@ -24,11 +22,11 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.0.2",
+    "arcanedev/log-viewer": "*",
     "guzzlehttp/guzzle": "*",
     "laravel/framework": "*",
     "laravel/jetstream": "*",
     "laravel/sanctum": "*",
-    "laravel/tinker": "*",
     "livewire/livewire": "*"
   },
   "require-dev": {
@@ -45,12 +43,6 @@
     ],
     "post-update-cmd": [
       "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
-    ],
-    "post-root-package-install": [
-      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-    ],
-    "post-create-project-cmd": [
-      "@php artisan key:generate --ansi"
     ]
   },
   "type": "project"

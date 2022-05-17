@@ -16,6 +16,7 @@
     "dev": "yarn run development",
     "development": "mix",
     "hot": "mix watch --hot",
+    "prod": "yarn run production",
     "production": "mix --production",
     "watch": "mix watch",
     "watch-poll": "mix watch -- --watch-options-poll=1000"

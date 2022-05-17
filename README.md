@@ -11,12 +11,6 @@ composer install
 composer update
 
 
-copy .env.example .env
-
-
-php artisan key:generate
-
-
 php artisan migrate
 
 
@@ -39,11 +33,3 @@ http://localhost:8000
 
 ## Deploy
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
-php artisan key:generate --show
-
-
-->
-
-
-APP_KEY

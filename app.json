@@ -1,10 +1,11 @@
 {
-  "addons": [
-    { "plan": "heroku-postgresql" }
-  ],
   "buildpacks": [
     { "url": "heroku/php" },
     { "url": "heroku/nodejs" }
   ],
+  "env": {
+    "APP_DEBUG": "false",
+    "APP_ENV": "production"
+  },
   "repository": "https://github.com/eaststrong/livewire-esk"
 }
