@@ -12,43 +12,49 @@ use Tests\TestCase;
 
 class InviteTeamMemberTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_team_members_can_be_invited_to_team()
-    {
-        Mail::fake();
+  public function test_team_members_can_be_invited_to_team()
+  {
+    Mail::fake();
 
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
-                        ->set('addTeamMemberForm', [
-                            'email' => 'test@example.com',
-                            'role' => 'admin',
-                        ])->call('addTeamMember');
+    $arr = ['team' => $user->currentTeam];
+    $test = Livewire::test(TeamMemberManager::class, $arr);
 
-        Mail::assertSent(TeamInvitation::class);
+    $arr = [
+      'email' => 'test@example.com',
+      'role' => 'admin',
+    ];
 
-        $this->assertCount(1, $user->currentTeam->fresh()->teamInvitations);
-    }
+    $set = $test->set('addTeamMemberForm', $arr);
+    $set->call('addTeamMember');
+    Mail::assertSent(TeamInvitation::class);
+    $fresh = $user->currentTeam->fresh();
+    $this->assertCount(1, $fresh->teamInvitations);
+  }
 
-    public function test_team_member_invitations_can_be_cancelled()
-    {
-        Mail::fake();
+  public function test_team_member_invitations_can_be_cancelled()
+  {
+    Mail::fake();
 
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        // Add the team member...
-        $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
-                        ->set('addTeamMemberForm', [
-                            'email' => 'test@example.com',
-                            'role' => 'admin',
-                        ])->call('addTeamMember');
+    $arr = ['team' => $user->currentTeam];
+    $test = Livewire::test(TeamMemberManager::class, $arr);
 
-        $invitationId = $user->currentTeam->fresh()->teamInvitations->first()->id;
+    $arr = [
+      'email' => 'test@example.com',
+      'role' => 'admin',
+    ];
 
-        // Cancel the team invitation...
-        $component->call('cancelTeamInvitation', $invitationId);
-
-        $this->assertCount(0, $user->currentTeam->fresh()->teamInvitations);
-    }
+    $set = $test->set('addTeamMemberForm', $arr);
+    $call = $set->call('addTeamMember');
+    $fresh = $user->currentTeam->fresh();
+    $first = $fresh->teamInvitations->first();
+    $call->call('cancelTeamInvitation', $first->id);
+    $fresh = $user->currentTeam->fresh();
+    $this->assertCount(0, $fresh->teamInvitations);
+  }
 }

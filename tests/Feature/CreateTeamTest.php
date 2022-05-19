@@ -10,17 +10,23 @@ use Tests\TestCase;
 
 class CreateTeamTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_teams_can_be_created()
-    {
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+  public function test_teams_can_be_created()
+  {
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        Livewire::test(CreateTeamForm::class)
-                    ->set(['state' => ['name' => 'Test Team']])
-                    ->call('createTeam');
-
-        $this->assertCount(2, $user->fresh()->ownedTeams);
-        $this->assertEquals('Test Team', $user->fresh()->ownedTeams()->latest('id')->first()->name);
-    }
+    $test = Livewire::test(CreateTeamForm::class);
+    $arr = ['name' => 'Test Team'];
+    $arr = ['state' => $arr];
+    $set = $test->set($arr);
+    $set->call('createTeam');
+    $fresh = $user->fresh();
+    $this->assertCount(2, $fresh->ownedTeams);
+    $fresh = $user->fresh();
+    $ownedTeams = $fresh->ownedTeams();
+    $latest = $ownedTeams->latest('id');
+    $first = $latest->first();
+    $this->assertEquals('Test Team', $first->name);
+  }
 }

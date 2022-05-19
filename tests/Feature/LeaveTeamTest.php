@@ -10,32 +10,36 @@ use Tests\TestCase;
 
 class LeaveTeamTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_users_can_leave_teams()
-    {
-        $user = User::factory()->withPersonalTeam()->create();
+  public function test_users_can_leave_teams()
+  {
+    $factory = User::factory();
+    $withPersonalTeam = $factory->withPersonalTeam();
+    $create = $withPersonalTeam->create();
+    $users = $create->currentTeam->users();
+    $arr = ['role' => 'admin'];
 
-        $user->currentTeam->users()->attach(
-            $otherUser = User::factory()->create(), ['role' => 'admin']
-        );
+    $users->attach($otherUser = User::factory()->create(), $arr);
 
-        $this->actingAs($otherUser);
+    $this->actingAs($otherUser);
+    $arr = ['team' => $create->currentTeam];
+    $test = Livewire::test(TeamMemberManager::class, $arr);
+    $test->call('leaveTeam');
+    $fresh = $create->currentTeam->fresh();
+    $this->assertCount(0, $fresh->users);
+  }
 
-        $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
-                        ->call('leaveTeam');
+  public function test_team_owners_cant_leave_their_own_team()
+  {
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        $this->assertCount(0, $user->currentTeam->fresh()->users);
-    }
-
-    public function test_team_owners_cant_leave_their_own_team()
-    {
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
-
-        $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
-                        ->call('leaveTeam')
-                        ->assertHasErrors(['team']);
-
-        $this->assertNotNull($user->currentTeam->fresh());
-    }
+    $arr = ['team' => $user->currentTeam];
+    $test = Livewire::test(TeamMemberManager::class, $arr);
+    $call = $test->call('leaveTeam');
+    $arr = ['team'];
+    $call->assertHasErrors($arr);
+    $fresh = $user->currentTeam->fresh();
+    $this->assertNotNull($fresh);
+  }
 }

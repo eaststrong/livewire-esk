@@ -11,29 +11,42 @@ use Tests\TestCase;
 
 class CreateApiTokenTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_api_tokens_can_be_created()
-    {
-        if (! Features::hasApiFeatures()) {
-            return $this->markTestSkipped('API support is not enabled.');
-        }
+  public function test_api_tokens_can_be_created()
+  {
+    $hasApiFeatures = Features::hasApiFeatures();
+    if (! $hasApiFeatures) {return $this->markTestSkipped('API support is not enabled.');}
 
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        Livewire::test(ApiTokenManager::class)
-                    ->set(['createApiTokenForm' => [
-                        'name' => 'Test Token',
-                        'permissions' => [
-                            'read',
-                            'update',
-                        ],
-                    ]])
-                    ->call('createApiToken');
+    $test = Livewire::test(ApiTokenManager::class);
 
-        $this->assertCount(1, $user->fresh()->tokens);
-        $this->assertEquals('Test Token', $user->fresh()->tokens->first()->name);
-        $this->assertTrue($user->fresh()->tokens->first()->can('read'));
-        $this->assertFalse($user->fresh()->tokens->first()->can('delete'));
-    }
+    $arr = [
+      'read',
+      'update',
+    ];
+
+    $arr = [
+      'name' => 'Test Token',
+      'permissions' => $arr,
+    ];
+
+    $arr = ['createApiTokenForm' => $arr];
+    $set = $test->set($arr);
+    $set->call('createApiToken');
+    $fresh = $user->fresh();
+    $this->assertCount(1, $fresh->tokens);
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $this->assertEquals('Test Token', $first->name);
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $can = $first->can('read');
+    $this->assertTrue($can);
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $can = $first->can('delete');
+    $this->assertFalse($can);
+  }
 }

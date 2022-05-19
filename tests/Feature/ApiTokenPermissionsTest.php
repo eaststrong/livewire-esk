@@ -12,34 +12,53 @@ use Tests\TestCase;
 
 class ApiTokenPermissionsTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_api_token_permissions_can_be_updated()
-    {
-        if (! Features::hasApiFeatures()) {
-            return $this->markTestSkipped('API support is not enabled.');
-        }
+  public function test_api_token_permissions_can_be_updated()
+  {
+    $hasApiFeatures = Features::hasApiFeatures();
+    if (! $hasApiFeatures) {return $this->markTestSkipped('API support is not enabled.');}
 
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        $token = $user->tokens()->create([
-            'name' => 'Test Token',
-            'token' => Str::random(40),
-            'abilities' => ['create', 'read'],
-        ]);
+    $tokens = $user->tokens();
 
-        Livewire::test(ApiTokenManager::class)
-                    ->set(['managingPermissionsFor' => $token])
-                    ->set(['updateApiTokenForm' => [
-                        'permissions' => [
-                            'delete',
-                            'missing-permission',
-                        ],
-                    ]])
-                    ->call('updateApiToken');
+    $arr = [
+      'create', 
+      'read'
+    ];
 
-        $this->assertTrue($user->fresh()->tokens->first()->can('delete'));
-        $this->assertFalse($user->fresh()->tokens->first()->can('read'));
-        $this->assertFalse($user->fresh()->tokens->first()->can('missing-permission'));
-    }
+    $arr = [
+      'abilities' => $arr,
+      'name' => 'Test Token',
+      'token' => Str::random(40),
+    ];
+
+    $create = $tokens->create($arr);
+    $test = Livewire::test(ApiTokenManager::class);
+    $arr = ['managingPermissionsFor' => $create];
+    $set = $test->set($arr);
+
+    $arr = [
+      'delete',
+      'missing-permission',
+    ];
+
+    $arr = ['permissions' => $arr];
+    $arr = ['updateApiTokenForm' => $arr];
+    $set = $set->set($arr);
+    $set->call('updateApiToken');
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $can = $first->can('delete');
+    $this->assertTrue($can);
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $can = $first->can('read');
+    $this->assertFalse($can);
+    $fresh = $user->fresh();
+    $first = $fresh->tokens->first();
+    $can = $first->can('missing-permission');
+    $this->assertFalse($can);
+  }
 }

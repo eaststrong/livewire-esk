@@ -9,37 +9,36 @@ use Tests\TestCase;
 
 class PasswordConfirmationTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_confirm_password_screen_can_be_rendered()
-    {
-        $user = User::factory()->withPersonalTeam()->create();
+  public function test_confirm_password_screen_can_be_rendered()
+  {
+    $factory = User::factory();
+    $withPersonalTeam = $factory->withPersonalTeam();
+    $create = $withPersonalTeam->create();
+    $actingAs = $this->actingAs($create);
+    $get = $actingAs->get('/user/confirm-password');
+    $get->assertStatus(200);
+  }
 
-        $response = $this->actingAs($user)->get('/user/confirm-password');
+  public function test_password_can_be_confirmed()
+  {
+    $factory = User::factory();
+    $create = $factory->create();
+    $actingAs = $this->actingAs($create);
+    $arr = ['password' => 'password'];
+    $post = $actingAs->post('/user/confirm-password', $arr);
+    $post->assertRedirect();
+    $post->assertSessionHasNoErrors();
+  }
 
-        $response->assertStatus(200);
-    }
-
-    public function test_password_can_be_confirmed()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post('/user/confirm-password', [
-            'password' => 'password',
-        ]);
-
-        $response->assertRedirect();
-        $response->assertSessionHasNoErrors();
-    }
-
-    public function test_password_is_not_confirmed_with_invalid_password()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post('/user/confirm-password', [
-            'password' => 'wrong-password',
-        ]);
-
-        $response->assertSessionHasErrors();
-    }
+  public function test_password_is_not_confirmed_with_invalid_password()
+  {
+    $factory = User::factory();
+    $create = $factory->create();
+    $actingAs = $this->actingAs($create);
+    $arr = ['password' => 'wrong-password'];
+    $post = $actingAs->post('/user/confirm-password', $arr);
+    $post->assertSessionHasErrors();
+  }
 }

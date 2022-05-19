@@ -12,26 +12,35 @@ use Tests\TestCase;
 
 class DeleteApiTokenTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_api_tokens_can_be_deleted()
-    {
-        if (! Features::hasApiFeatures()) {
-            return $this->markTestSkipped('API support is not enabled.');
-        }
+  public function test_api_tokens_can_be_deleted()
+  {
+    $hasApiFeatures = Features::hasApiFeatures();
+    if (! $hasApiFeatures) {return $this->markTestSkipped('API support is not enabled.');}
 
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+    $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-        $token = $user->tokens()->create([
-            'name' => 'Test Token',
-            'token' => Str::random(40),
-            'abilities' => ['create', 'read'],
-        ]);
+    $tokens = $user->tokens();
 
-        Livewire::test(ApiTokenManager::class)
-                    ->set(['apiTokenIdBeingDeleted' => $token->id])
-                    ->call('deleteApiToken');
+    $arr = [
+      'create', 
+      'read'
+    ];
 
-        $this->assertCount(0, $user->fresh()->tokens);
-    }
+    $arr = [
+      'abilities' => $arr,
+      'name' => 'Test Token',
+      'token' => Str::random(40),
+    ];
+
+    $create = $tokens->create($arr);
+
+    $test = Livewire::test(ApiTokenManager::class);
+    $arr = ['apiTokenIdBeingDeleted' => $create->id];
+    $set = $test->set($arr);
+    $set->call('deleteApiToken');
+    $fresh = $user->fresh();
+    $this->assertCount(0, $fresh->tokens);
+  }
 }
