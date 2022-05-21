@@ -9,51 +9,70 @@ use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
-    /**
-     * Validate and update the given user's profile information.
-     *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
-     */
-    public function update($user, array $input)
-    {
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-        ])->validateWithBag('updateProfileInformation');
+  public function update($user, array $input)
+  {
+    $unique = Rule::unique('users');
+    $ignore = $unique->ignore($user->id);
 
-        if (isset($input['photo'])) {
-            $user->updateProfilePhoto($input['photo']);
-        }
+    $arr1 = [
+      'required',
+      'email',
+      'max:255',
+      $ignore,
+    ];
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
-            $this->updateVerifiedUser($user, $input);
-        } else {
-            $user->forceFill([
-                'name' => $input['name'],
-                'email' => $input['email'],
-            ])->save();
-        }
+    $arr2 = [
+      'required',
+      'string',
+      'max:255',
+    ];
+
+    $arr3 = [
+      'nullable',
+      'mimes:jpg,jpeg,png',
+      'max:1024',
+    ];
+
+    $arr = [
+      'email' => $arr1,
+      'name' => $arr2,
+      'photo' => $arr3,
+    ];
+
+    $make = Validator::make($input, $arr);
+    $make->validateWithBag('updateProfileInformation');
+    $isset = isset($input['photo']);
+
+    if ($isset) {
+      $user->updateProfilePhoto($input['photo']);
     }
 
-    /**
-     * Update the given verified user's profile information.
-     *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
-     */
-    protected function updateVerifiedUser($user, array $input)
-    {
-        $user->forceFill([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'email_verified_at' => null,
-        ])->save();
+    $bln = $input['email'] !== $user->email;
+    $bln = $bln && $user instanceof MustVerifyEmail;
 
-        $user->sendEmailVerificationNotification();
+    if ($bln) {
+      $this->updateVerifiedUser($user, $input);
+    } else {
+      $arr = [
+        'email' => $input['email'],
+        'name' => $input['name'],
+      ];
+
+      $forceFill = $user->forceFill($arr);
+      $forceFill->save();
     }
+  }
+
+  protected function updateVerifiedUser($user, array $input)
+  {
+    $arr = [
+      'email' => $input['email'],
+      'email_verified_at' => null,
+      'name' => $input['name'],
+    ];
+
+    $forceFill = $user->forceFill($arr);
+    $forceFill->save();
+    $user->sendEmailVerificationNotification();
+  }
 }

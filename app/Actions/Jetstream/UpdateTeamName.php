@@ -8,24 +8,22 @@ use Laravel\Jetstream\Contracts\UpdatesTeamNames;
 
 class UpdateTeamName implements UpdatesTeamNames
 {
-    /**
-     * Validate and update the given team's name.
-     *
-     * @param  mixed  $user
-     * @param  mixed  $team
-     * @param  array  $input
-     * @return void
-     */
-    public function update($user, $team, array $input)
-    {
-        Gate::forUser($user)->authorize('update', $team);
+  public function update($user, $team, array $input)
+  {
+    $forUser = Gate::forUser($user);
+    $forUser->authorize('update', $team);
 
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-        ])->validateWithBag('updateTeamName');
+    $arr = [
+      'required',
+      'string',
+      'max:255',
+    ];
 
-        $team->forceFill([
-            'name' => $input['name'],
-        ])->save();
-    }
+    $arr = ['name' => $arr];
+    $make = Validator::make($input, $arr);
+    $make->validateWithBag('updateTeamName');
+    $arr = ['name' => $input['name']];
+    $forceFill = $team->forceFill($arr);
+    $forceFill->save();
+  }
 }
