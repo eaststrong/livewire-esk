@@ -8,28 +8,39 @@ use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 
 class UpdateUserPassword implements UpdatesUserPasswords
 {
-    use PasswordValidationRules;
+  use PasswordValidationRules;
 
-    /**
-     * Validate and update the user's password.
-     *
-     * @param  mixed  $user
-     * @param  array  $input
-     * @return void
-     */
-    public function update($user, array $input)
-    {
-        Validator::make($input, [
-            'current_password' => ['required', 'string'],
-            'password' => $this->passwordRules(),
-        ])->after(function ($validator) use ($user, $input) {
-            if (! isset($input['current_password']) || ! Hash::check($input['current_password'], $user->password)) {
-                $validator->errors()->add('current_password', __('The provided password does not match your current password.'));
-            }
-        })->validateWithBag('updatePassword');
+  public function update($user, array $input)
+  {
+    $arr = [
+      'required',
+      'string',
+    ];
 
-        $user->forceFill([
-            'password' => Hash::make($input['password']),
-        ])->save();
-    }
+    $passwordRules = $this->passwordRules();
+
+    $arr = [
+      'current_password' => $arr,
+      'password' => $passwordRules,
+    ];
+
+    $make = Validator::make($input, $arr);
+
+    $after = $make->after(function ($validator) use ($user, $input) {
+      $bln = isset($input['current_password']);
+      $bln = $bln && Hash::check($input['current_password'], $user->password);
+
+      if (! $bln) {
+        $errors = $validator->errors();
+        $__ = __('The provided password does not match your current password.');
+        $errors->add('current_password', $__);
+      }
+    });
+
+    $after->validateWithBag('updatePassword');
+    $make = Hash::make($input['password']);
+    $arr = ['password' => $make];
+    $forceFill = $user->forceFill($arr);
+    $forceFill->save();
+  }
 }
