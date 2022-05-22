@@ -6,10 +6,8 @@ return [
     'threads' => 1,
     'time' => 4,
   ],
-
   'bcrypt' => [
     'rounds' => env('BCRYPT_ROUNDS', 10),
   ],
-
   'driver' => 'bcrypt',
 ];

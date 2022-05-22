@@ -14,54 +14,44 @@ use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
+  public function register()
+  {
+  }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->configurePermissions();
+  public function boot()
+  {
+    $this->configurePermissions();
+    Jetstream::createTeamsUsing(CreateTeam::class);
+    Jetstream::updateTeamNamesUsing(UpdateTeamName::class);
+    Jetstream::addTeamMembersUsing(AddTeamMember::class);
+    Jetstream::inviteTeamMembersUsing(InviteTeamMember::class);
+    Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
+    Jetstream::deleteTeamsUsing(DeleteTeam::class);
+    Jetstream::deleteUsersUsing(DeleteUser::class);
+  }
 
-        Jetstream::createTeamsUsing(CreateTeam::class);
-        Jetstream::updateTeamNamesUsing(UpdateTeamName::class);
-        Jetstream::addTeamMembersUsing(AddTeamMember::class);
-        Jetstream::inviteTeamMembersUsing(InviteTeamMember::class);
-        Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
-        Jetstream::deleteTeamsUsing(DeleteTeam::class);
-        Jetstream::deleteUsersUsing(DeleteUser::class);
-    }
+  protected function configurePermissions()
+  {
+    $arr = ['read'];
+    Jetstream::defaultApiTokenPermissions($arr);
 
-    /**
-     * Configure the roles and permissions that are available within the application.
-     *
-     * @return void
-     */
-    protected function configurePermissions()
-    {
-        Jetstream::defaultApiTokenPermissions(['read']);
+    $arr = [
+      'create',
+      'read',
+      'update',
+      'delete',
+    ];
 
-        Jetstream::role('admin', 'Administrator', [
-            'create',
-            'read',
-            'update',
-            'delete',
-        ])->description('Administrator users can perform any action.');
+    $role = Jetstream::role('admin', 'Administrator', $arr);
+    $role->description('Administrator users can perform any action.');
 
-        Jetstream::role('editor', 'Editor', [
-            'read',
-            'create',
-            'update',
-        ])->description('Editor users have the ability to read, create, and update.');
-    }
+    $arr = [
+      'read',
+      'create',
+      'update',
+    ];
+
+    $role = Jetstream::role('editor', 'Editor', $arr);
+    $role->description('Editor users have the ability to read, create, and update.');
+  }
 }

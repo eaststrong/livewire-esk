@@ -18,7 +18,7 @@ class Handler extends ExceptionHandler
 
   public function register()
   {
-    $fFunction = function (Throwable $e) {};
-    $this->reportable($fFunction);
+    $fReportable = function (Throwable $e) {};
+    $this->reportable($fReportable);
   }
 }

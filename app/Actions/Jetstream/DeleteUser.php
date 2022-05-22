@@ -29,7 +29,7 @@ class DeleteUser implements DeletesUsers
   {
     $teams = $user->teams();
     $teams->detach();
-    $fFunction = function ($team) {$this->deletesTeams->delete($team);};
-    $user->ownedTeams->each($fFunction);
+    $fEach = function ($team) {$this->deletesTeams->delete($team);};
+    $user->ownedTeams->each($fEach);
   }
 }

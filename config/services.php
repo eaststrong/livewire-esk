@@ -7,7 +7,6 @@ return [
     'scheme' => 'https',
     'secret' => env('MAILGUN_SECRET'),
   ],
-
   'postmark' => [
     'token' => env('POSTMARK_TOKEN'),
   ],

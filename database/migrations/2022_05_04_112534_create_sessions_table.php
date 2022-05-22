@@ -6,30 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->text('payload');
-            $table->integer('last_activity')->index();
-        });
-    }
+  public function up()
+  {
+    $fCreate = function (Blueprint $table) {
+      $string = $table->string('id');
+      $string->primary();
+      $foreignId = $table->foreignId('user_id');
+      $nullable = $foreignId->nullable();
+      $nullable->index();
+      $string = $table->string('ip_address', 45);
+      $string->nullable();
+      $text = $table->text('user_agent');
+      $text->nullable();
+      $table->text('payload');
+      $integer = $table->integer('last_activity');
+      $integer->index();
+    };
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('sessions');
-    }
+    Schema::create('sessions', $fCreate);
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('sessions');
+  }
 };

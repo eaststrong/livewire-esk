@@ -10,43 +10,34 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the "home" route for your application.
-     *
-     * This is used by Laravel authentication to redirect users after login.
-     *
-     * @var string
-     */
-    public const HOME = '/dashboard';
+  public const HOME = '/dashboard';
 
-    /**
-     * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->configureRateLimiting();
+  public function boot()
+  {
+    $this->configureRateLimiting();
 
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+    $fRoutes = function () {
+      $middleware = Route::middleware('api');
+      $prefix = $middleware->prefix('api');
+      $base_path = base_path('routes/api.php');
+      $prefix->group($base_path);
+      $middleware = Route::middleware('web');
+      $base_path = base_path('routes/web.php');
+      $middleware->group($base_path);
+    };
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
-    }
+    $this->routes($fRoutes);
+  }
 
-    /**
-     * Configure the rate limiters for the application.
-     *
-     * @return void
-     */
-    protected function configureRateLimiting()
-    {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
-        });
-    }
+  protected function configureRateLimiting()
+  {
+    $fFor = function (Request $request) {
+      $perMinute = Limit::perMinute(60);
+      $user = $request->user();
+      $par = $user?->id ?: $request->ip();
+      return $perMinute->by($par);
+    };
+
+    RateLimiter::for('api', $fFor);
+  }
 }

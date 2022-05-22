@@ -55,8 +55,8 @@ class CreateNewUser implements CreatesNewUsers
       ];
 
       $create = User::create($arr);
-      $fFunction = function (User $user) {$this->createTeam($user);};
-      return tap($create, $fFunction);
+      $fTap = function (User $user) {$this->createTeam($user);};
+      return tap($create, $fTap);
     });
   }
 

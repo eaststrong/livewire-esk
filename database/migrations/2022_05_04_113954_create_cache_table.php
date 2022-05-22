@@ -6,34 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('cache', function (Blueprint $table) {
-            $table->string('key')->primary();
-            $table->mediumText('value');
-            $table->integer('expiration');
-        });
+  public function up()
+  {
+    $fCreate = function (Blueprint $table) {
+      $string = $table->string('key');
+      $string->primary();
+      $table->mediumText('value');
+      $table->integer('expiration');
+    };
 
-        Schema::create('cache_locks', function (Blueprint $table) {
-            $table->string('key')->primary();
-            $table->string('owner');
-            $table->integer('expiration');
-        });
-    }
+    Schema::create('cache', $fCreate);
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('cache');
-        Schema::dropIfExists('cache_locks');
-    }
+    $fCreate = function (Blueprint $table) {
+      $string = $table->string('key');
+      $string->primary();
+      $table->string('owner');
+      $table->integer('expiration');
+    };
+
+    Schema::create('cache_locks', $fCreate);
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('cache');
+    Schema::dropIfExists('cache_locks');
+  }
 };

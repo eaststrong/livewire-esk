@@ -6,31 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('team_invitations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->string('email');
-            $table->string('role')->nullable();
-            $table->timestamps();
+  public function up()
+  {
+    $fCreate = function (Blueprint $table) {
+      $table->id();
+      $foreignId = $table->foreignId('team_id');
+      $constrained = $foreignId->constrained();
+      $constrained->cascadeOnDelete();
+      $table->string('email');
+      $string = $table->string('role');
+      $string->nullable();
+      $table->timestamps();
 
-            $table->unique(['team_id', 'email']);
-        });
-    }
+      $arr = [
+        'team_id',
+        'email',
+      ];
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('team_invitations');
-    }
+      $table->unique($arr);
+    };
+
+    Schema::create('team_invitations', $fCreate);
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('team_invitations');
+  }
 };

@@ -14,36 +14,33 @@ use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
+  public function register()
+  {
+  }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
-        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+  public function boot()
+  {
+    Fortify::createUsersUsing(CreateNewUser::class);
+    Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+    Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
+    Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        RateLimiter::for('login', function (Request $request) {
-            $email = (string) $request->email;
+    $fFor = function (Request $request) {
+      $email = (string) $request->email;
+      $perMinute = Limit::perMinute(5);
+      $ip = $email.$request->ip();
+      return $perMinute->by($ip);
+    };
 
-            return Limit::perMinute(5)->by($email.$request->ip());
-        });
+    RateLimiter::for('login', $fFor);
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
-    }
+    $fFor = function (Request $request) {
+      $perMinute = Limit::perMinute(5);
+      $session = $request->session();
+      $get = $session->get('login.id');
+      return $perMinute->by($get);
+    };
+
+    RateLimiter::for('two-factor', $fFor);
+  }
 }

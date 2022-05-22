@@ -8,24 +8,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TeamFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Team::class;
+  protected $model = Team::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition()
-    {
-        return [
-            'name' => $this->faker->unique()->company(),
-            'user_id' => User::factory(),
-            'personal_team' => true,
-        ];
-    }
+  public function definition()
+  {
+    $unique = $this->faker->unique();
+    $company = $unique->company();
+    $factory = User::factory();
+
+    return [
+      'name' => $company,
+      'personal_team' => true,
+      'user_id' => $factory,
+    ];
+  }
 }

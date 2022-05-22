@@ -5,16 +5,13 @@ return [
     'guard' => 'web',
     'passwords' => 'users',
   ],
-
   'guards' => [
     'web' => [
       'driver' => 'session',
       'provider' => 'users',
     ],
   ],
-
   'password_timeout' => 10800,
-
   'passwords' => [
     'users' => [
       'expire' => 60,
@@ -23,7 +20,6 @@ return [
       'throttle' => 60,
     ],
   ],
-
   'providers' => [
     'users' => [
       'driver' => 'eloquent',

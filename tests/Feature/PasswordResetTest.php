@@ -46,13 +46,13 @@ class PasswordResetTest extends TestCase
     $arr = ['email' => $create->email];
     $response = $this->post('/forgot-password', $arr);
 
-    $fFunction = function ($notification) {
+    $fAssertSentTo = function ($notification) {
       $get = $this->get('/reset-password/'.$notification->token);
       $get->assertStatus(200);
       return true;
     };
 
-    Notification::assertSentTo($create, ResetPassword::class, $fFunction);
+    Notification::assertSentTo($create, ResetPassword::class, $fAssertSentTo);
   }
 
   public function test_password_can_be_reset_with_valid_token()

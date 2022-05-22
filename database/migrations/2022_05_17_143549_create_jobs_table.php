@@ -6,31 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('jobs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('queue')->index();
-            $table->longText('payload');
-            $table->unsignedTinyInteger('attempts');
-            $table->unsignedInteger('reserved_at')->nullable();
-            $table->unsignedInteger('available_at');
-            $table->unsignedInteger('created_at');
-        });
-    }
+  public function up()
+  {
+    $fCreate = function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $string = $table->string('queue');
+      $string->index();
+      $table->longText('payload');
+      $table->unsignedTinyInteger('attempts');
+      $unsignedInteger = $table->unsignedInteger('reserved_at');
+      $unsignedInteger->nullable();
+      $table->unsignedInteger('available_at');
+      $table->unsignedInteger('created_at');
+    };
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('jobs');
-    }
+    Schema::create('jobs', $fCreate);
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('jobs');
+  }
 };

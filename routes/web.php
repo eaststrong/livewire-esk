@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-$fFunction = function () {return view('welcome');};
-Route::get('/', $fFunction);
+$fGet = function () {return view('welcome');};
+Route::get('/', $fGet);
 
 $arr = [
   'auth:sanctum',
@@ -13,10 +13,10 @@ $arr = [
 
 $middleware = Route::middleware($arr);
 
-$fFunction = function () {
-  $fFunction = function () {return view('dashboard');};
-  $get = Route::get('/dashboard', $fFunction);
+$fGroup = function () {
+  $fGet = function () {return view('dashboard');};
+  $get = Route::get('/dashboard', $fGet);
   $get->name('dashboard');
 };
 
-$middleware->group($fFunction);
+$middleware->group($fGroup);

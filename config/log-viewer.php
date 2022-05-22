@@ -17,17 +17,14 @@ return [
       'warning' => '#FF9100',
     ],
   ],
-
   'download' => [
     'extension' => 'log',
     'prefix' => 'laravel-',
   ],
-
   'highlight' => [
     '^#\d+',
     '^Stack trace:',
   ],
-
   'icons' => [
     'alert' => 'fa fa-fw fa-bullhorn',
     'all' => 'fa fa-fw fa-list',
@@ -39,31 +36,24 @@ return [
     'notice' => 'fa fa-fw fa-exclamation-circle',
     'warning' => 'fa fa-fw fa-exclamation-triangle',
   ],
-
   'locale' => 'auto',
-
   'menu' => [
     'filter-route' => 'log-viewer::logs.filter',
     'icons-enabled' => true,
   ],
-
   'pattern' => [
     'date' => Filesystem::PATTERN_DATE,
     'extension' => Filesystem::PATTERN_EXTENSION,
     'prefix' => Filesystem::PATTERN_PREFIX,
   ],
-
   'per-page' => 30,
-
   'route' => [
     'attributes' => [
       'middleware' => env('ARCANEDEV_LOGVIEWER_MIDDLEWARE') ? explode(',', env('ARCANEDEV_LOGVIEWER_MIDDLEWARE')) : null,
       'prefix' => 'log-viewer',
     ],
-
     'enabled' => true,
   ],
-
   'storage-path' => storage_path('logs'),
   'theme' => 'bootstrap-4',
 ];
