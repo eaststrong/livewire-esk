@@ -6,7 +6,7 @@ return [
   'connection' => env('SESSION_CONNECTION'),
   'cookie' => env('SESSION_COOKIE', Str::slug('laravel', '_') . '_session'),
   'domain' => env('SESSION_DOMAIN'),
-  'driver' => env('SESSION_DRIVER', 'database'),
+  'driver' => env('SESSION_DRIVER', 'cookie'),
   'encrypt' => false,
   'expire_on_close' => false,
   'files' => storage_path('framework/sessions'),
