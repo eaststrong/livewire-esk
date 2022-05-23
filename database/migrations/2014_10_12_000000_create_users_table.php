@@ -22,6 +22,7 @@ return new class extends Migration
       $string = $table->string('profile_photo_path', 2048);
       $string->nullable();
       $table->timestamps();
+      $table->softDeletes();
     };
 
     Schema::create('users', $fCreate);

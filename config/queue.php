@@ -2,14 +2,6 @@
 
 return [
   'connections' => [
-    'beanstalkd' => [
-      'after_commit' => false,
-      'block_for' => 0,
-      'driver' => 'beanstalkd',
-      'host' => 'localhost',
-      'queue' => 'default',
-      'retry_after' => 90,
-    ],
     'database' => [
       'after_commit' => false,
       'driver' => 'database',

@@ -15,6 +15,7 @@ return new class extends Migration
       $string = $table->string('role');
       $string->nullable();
       $table->timestamps();
+      $table->softDeletes();
 
       $arr = [
         'team_id',

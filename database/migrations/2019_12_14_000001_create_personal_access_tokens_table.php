@@ -19,6 +19,7 @@ class CreatePersonalAccessTokensTable extends Migration
       $timestamp = $table->timestamp('last_used_at');
       $timestamp->nullable();
       $table->timestamps();
+      $table->softDeletes();
     };
 
     Schema::create('personal_access_tokens', $fCreate);

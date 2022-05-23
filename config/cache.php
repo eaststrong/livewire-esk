@@ -3,7 +3,7 @@
 use Illuminate\Support\Str;
 
 return [
-  'default' => env('CACHE_DRIVER', 'database'),
+  'default' => env('CACHE_DRIVER', 'array'),
   'prefix' => env('CACHE_PREFIX', Str::slug('laravel', '_') . '_cache_'),
   'stores' => [
     'apc' => ['driver' => 'apc'],
